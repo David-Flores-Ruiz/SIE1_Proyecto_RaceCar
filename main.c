@@ -1,65 +1,94 @@
-
-/**
- * @file    Seguidor_de_linea.c
- * @brief   Application entry point.
+/*
+ * @file:			P3_PANEL_ELECTRONICO.c
+ * @company:		ITESO
+ * @Engineer Team:	D.F.R. / R.G.P.
+ * @contact:		ie717807@iteso.mx
  */
-#include <stdio.h>
-#include "ADC.h"
+
 #include "MK64F12.h"
-#include "FlexTimer.h"
-#include "GPIO.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <string_driver.h>
+#include "UART_driver.h"
+#include "I2C.h"
+#include "memoria.h"
 #include "bits.h"
+#include "NVIC.h"
+#include "GPIO.h"
+#include "RTC.h"
+#include "display.h"	//* 8 x 16 LED matrix */
+#include "TeraTerm.h"
+#include "Accel_FXOS8700CQ.h"
 
-const adc_config_t g_ADC_config = {
-					ADC_0,
-					res_8bits,
-					bus_clock };
-const adc_config_t g_ADC_1_config = {
-					ADC_1,
-					res_8bits,
-					bus_clock };
 
-const FTM_config_t g_FTM0_config = {
-					FTM_0,
-					FTM_DISABLE_WPDIS,
-					FTM_DISABLE_FTMEN,
-					0x0FFF,						// MOD = 255d para cuenta de Reinicio
-					FTM_PWM_EdgeAligned_High,	// CnSC y CnV asigna a FTM0_CH0, FTM0_CH1, FTM0_CH2
-					GPIO_MUX4,
-					{GPIO_C, bit_1, bit_2, bit_3} }; 	// PTC1, PTC2, PTC3
+#define SYSTEM_CLOCK (10500000U)
+#define BAUD_RATE (9600U)
 
-void delay(uint16_t delay) {
-	volatile uint16_t j, i;
 
-	for (j = delay; j > 0; j--) {
-		for (i = 0; i < 1000; ++i) {
-			__asm("nop");
+int main(void)
+{
+	/**Enables the clock of PortB in order to configures TX and RX of UART peripheral*/
+	SIM->SCGC5 = SIM_SCGC5_PORTB_MASK;
+	/**Configures the pin control register of pin16 in PortB as UART RX*/
+	PORTB->PCR[16] = PORT_PCR_MUX(3);
+	/**Configures the pin control register of pin16 in PortB as UART TX*/
+	PORTB->PCR[17] = PORT_PCR_MUX(3);
+	/**Configures UART 0 to transmit/receive at 11520 bauds with a 21 MHz of clock core*/
+
+
+	UART_init (UART_0,  10200000, BD_115200);
+	printf("UART is configured");
+	/**Enables the UART 0 interrupt*/
+	UART_interrupt_enable(UART_0);
+	/**Enables the UART 0 interrupt in the NVIC*/
+	NVIC_enable_interrupt_and_priotity(UART0_IRQ, PRIORITY_10);
+	/**Enables interrupts*/
+	NVIC_global_enable_interrupts;
+
+
+	I2C_init_Accel(I2C_0, SYSTEM_CLOCK, BAUD_RATE);
+
+	Accel_Init();	/** Configurado para Inicializar el chip FXOS8700CQ del acelerometro*/
+	State_Accel_t MoveAccel = Move_STOP;
+
+	while (1) {
+
+		Accel_READ_XYZ();
+		//TeraTerm_MENU_FSM();
+
+		MoveAccel = Accel_GET_MOVE();
+
+		switch (MoveAccel)
+		{
+			case Move_ARRIBA:
+				printf("Frena! \n");
+				break;
+
+			case Move_ABAJO:
+				printf("Acelera! \n");
+				break;
+
+			case Move_DER:
+				printf("Giro a la derecha! \n");
+				break;
+
+			case Move_IZQ:
+				printf("Giro a la izquierda! \n");
+				break;
+
+			case Move_STOP:
+				printf("Recargame Gasolina! \n");
+				break;
+
+			default:
+				printf("Estoy en case default!");
+				break;
 		}
 
 	}
-}
-int main(void) {
-	GPIO_clock_gating( GPIO_C);	// sw2
-	PIT_init();
-	ADC_init(&g_ADC_config);
-	ADC_init(&g_ADC_1_config);
 
-	/**Configuration function for FlexTimer for PWM: FTM0_ch0_ch1_ch2*/
-	FlexTimer_Init(&g_FTM0_config);
-	uint8_t sensor_izquierdo=0;
-	uint8_t sensor_derecho=0;
-
-    while(1) {
-    	sensor_izquierdo=ADC_result_1(ADC_1);
-    	sensor_derecho=ADC_result(ADC_0);
-    	printf("%d %d\n",sensor_izquierdo,sensor_derecho);
-
-   /* 	FlexTimer_update_channel_value(0xB0, FTM0_CH0);//esta es la funcion que saca valores a traves del puerto probablemente PTC1
-    	delay(950);
-    	FlexTimer_update_channel_value(0xE0, FTM0_CH0);
-    	delay(950);
-    	FlexTimer_update_channel_value(0x10F, FTM0_CH0);
-    	delay(950);*/
-    }
     return 0 ;
 }
+
+
+

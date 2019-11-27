@@ -45,7 +45,9 @@ typedef enum {bit_0,  /*!< Bit 0 */
 			  bit_31  /*!< Bit 31 */
 			} bit_t;
 
-
+typedef enum{
+	CERO_N,
+}numero;
 
 typedef enum{FALSE, TRUE} boolean_t;
 /*! This definition is as a general definitions to bits turn-on or turn-off any bit*/
