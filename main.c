@@ -28,6 +28,7 @@
 int main(void)
 {
 	/**Enables the clock of PortB in order to configures TX and RX of UART peripheral*/
+
 	SIM->SCGC5 = SIM_SCGC5_PORTB_MASK;
 	/**Configures the pin control register of pin16 in PortB as UART RX*/
 	PORTB->PCR[16] = PORT_PCR_MUX(3);
@@ -49,41 +50,12 @@ int main(void)
 	I2C_init_Accel(I2C_0, SYSTEM_CLOCK, BAUD_RATE);
 
 	Accel_Init();	/** Configurado para Inicializar el chip FXOS8700CQ del acelerometro*/
-	State_Accel_t MoveAccel = Move_STOP;
 
 	while (1) {
 
-		Accel_READ_XYZ();
 		//TeraTerm_MENU_FSM();
 
-		MoveAccel = Accel_GET_MOVE();
-
-		switch (MoveAccel)
-		{
-			case Move_ARRIBA:
-				printf("Frena! \n");
-				break;
-
-			case Move_ABAJO:
-				printf("Acelera! \n");
-				break;
-
-			case Move_DER:
-				printf("Giro a la derecha! \n");
-				break;
-
-			case Move_IZQ:
-				printf("Giro a la izquierda! \n");
-				break;
-
-			case Move_STOP:
-				printf("Recargame Gasolina! \n");
-				break;
-
-			default:
-				printf("Estoy en case default!");
-				break;
-		}
+		FSM_ACELEROMETRO();
 
 	}
 

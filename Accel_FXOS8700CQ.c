@@ -9,8 +9,8 @@
 #include "I2C.h"
 #include <stdio.h>
 
-//#define DEBUG_ON	 	//** For debugging purposes */
-
+//#define DEBUG_ON	 	//** For debugging purposes = Leer Sensor */
+#define DEBUG_ON_2		//**  " "  = Mapear los valores del Sensor*/
 
 static SRAWDATA g_ACC_XYZ = {0};
 static int32_t g_ACC_X_promedio = 0;
@@ -115,15 +115,15 @@ State_Accel_t Accel_GET_MOVE(void)
 	static State_Accel_t MOVE_ACTUAL = Move_STOP;
 
 	//** Detecta movimiento en eje X ¿Derecha o Izquierda? */
-	if (g_MOVE_X >  5000 && g_MOVE_X  <  10000)
+	if (g_MOVE_X >  X_Motion_Threshold && g_MOVE_X  <  MAX_enX)
 		MOVE_ACTUAL = Move_DER;
-	else if (g_MOVE_X < -5000 && g_MOVE_X < -10000)
+	else if (g_MOVE_X < -X_Motion_Threshold && g_MOVE_X > -MAX_enX)
 		MOVE_ACTUAL = Move_IZQ;
 
 	//** Detecta movimiento en eje Y ¿Arriba o Abajo? */
-	else if (g_MOVE_Y >  5000 && g_MOVE_Y <  10000)
+	else if (g_MOVE_Y >  Y_Motion_Threshold && g_MOVE_Y <  MAX_enY)
 		MOVE_ACTUAL = Move_ABAJO;
-	else if (g_MOVE_Y < -5000 && g_MOVE_Y < -10000)
+	else if (g_MOVE_Y < -Y_Motion_Threshold && g_MOVE_Y > -MAX_enY)
 		MOVE_ACTUAL = Move_ARRIBA;
 
 	//** No se esta moviendo lo suficiente en X ni en Y */
@@ -133,7 +133,52 @@ State_Accel_t Accel_GET_MOVE(void)
 	return (MOVE_ACTUAL);
 }
 
+void FSM_ACELEROMETRO(void)
+{
+	State_Accel_t MoveAccel = Move_STOP;
 
+	Accel_READ_XYZ();
+
+	MoveAccel = Accel_GET_MOVE();
+
+	switch (MoveAccel) {
+		case Move_ARRIBA:
+#ifdef DEBUG_ON_2
+			printf("Frena! \n");
+#endif
+			break;
+
+		case Move_ABAJO:
+#ifdef DEBUG_ON_2
+			printf("Acelera! \n");
+#endif
+			break;
+
+		case Move_DER:
+#ifdef DEBUG_ON_2
+			printf("Giro a la derecha! \n");
+#endif
+			break;
+
+		case Move_IZQ:
+#ifdef DEBUG_ON_2
+			printf("Giro a la izquierda! \n");
+#endif
+			break;
+
+		case Move_STOP:
+#ifdef DEBUG_ON_2
+			printf("Recargame Gasolina! \n");
+#endif
+			break;
+
+		default:
+#ifdef DEBUG_ON_2
+			printf("Estoy en case default!");
+#endif
+			break;
+	}//end Switch
+}
 
 
 

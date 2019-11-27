@@ -9,6 +9,13 @@
 
 #include <stdint.h>
 
+#define MAX_enX 9000	//** Con resolucion en 14 bits
+#define MAX_enY 9000	//** + Prueba experimental 		*/
+
+#define X_Motion_Threshold 4000	//** Valor que puede ser +- 9000 para
+#define Y_Motion_Threshold 3200 //** aumentar sensibilidad del control */
+
+
 //** Estructura que controla movimientos de la K64 sujetandola */
 //** como control si el Ethernet esta mas cecarno a ti */
 typedef struct
@@ -89,6 +96,6 @@ void Accel_Read(void);
 void Accel_READ_XYZ(void);
 
 State_Accel_t Accel_GET_MOVE(void);
-
+void FSM_ACELEROMETRO(void);
 
 #endif /* ACCEL_FXOS8700CQ_H_ */
