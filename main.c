@@ -9,7 +9,7 @@
 #include "FlexTimer.h"
 #include "GPIO.h"
 #include "bits.h"
-
+#include "seguidor_linea.h"
 const adc_config_t g_ADC_config = {
 					ADC_0,
 					res_8bits,
@@ -28,16 +28,15 @@ const FTM_config_t g_FTM0_config = {
 					GPIO_MUX4,
 					{GPIO_C, bit_1, bit_2, bit_3} }; 	// PTC1, PTC2, PTC3
 
-void delay(uint16_t delay) {
-	volatile uint16_t j, i;
 
-	for (j = delay; j > 0; j--) {
-		for (i = 0; i < 1000; ++i) {
-			__asm("nop");
-		}
-
-	}
-}
+/*
+ * PTC1 -> Control de Servomotor
+ * PTC2 -> Control de Puente H
+ *
+ * PTC0 -> ADC_0 Sensor derecho
+ * PTB11-> ADC_1 Sensor izquierdo
+ *
+ */
 int main(void) {
 	GPIO_clock_gating( GPIO_C);	// sw2
 	PIT_init();
@@ -46,20 +45,12 @@ int main(void) {
 
 	/**Configuration function for FlexTimer for PWM: FTM0_ch0_ch1_ch2*/
 	FlexTimer_Init(&g_FTM0_config);
-	uint8_t sensor_izquierdo=0;
-	uint8_t sensor_derecho=0;
 
+	FlexTimer_update_channel_value(0xE0, FTM0_CH0);//inicializa eje en el centro
+	delay(200);
     while(1) {
-    	sensor_izquierdo=ADC_result_1(ADC_1);
-    	sensor_derecho=ADC_result(ADC_0);
-    	printf("%d %d\n",sensor_izquierdo,sensor_derecho);
-
-   /* 	FlexTimer_update_channel_value(0xB0, FTM0_CH0);//esta es la funcion que saca valores a traves del puerto probablemente PTC1
-    	delay(950);
-    	FlexTimer_update_channel_value(0xE0, FTM0_CH0);
-    	delay(950);
-    	FlexTimer_update_channel_value(0x10F, FTM0_CH0);
-    	delay(950);*/
+    	Seguidor_linea_init();
     }
     return 0 ;
 }
+
