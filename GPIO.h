@@ -83,27 +83,12 @@ typedef struct
 	uint8_t flag_port_e : 1;
 } gpio_interrupt_flags_t;
 
-typedef struct
-{
-	uint8_t flag_PORT_B0 : 1;
-	uint8_t flag_PORT_B1 : 1;
-	uint8_t flag_PORT_B2 : 1;
-	uint8_t flag_PORT_B3 : 1;
-	uint8_t flag_PORT_B4 : 1;
-	uint8_t flag_PORT_B5 : 1;
-	uint8_t flag_PORT_B6 : 1;
-} gpio_decode_PORTB_t;
-
-typedef enum {
-	sw_B0, sw_B1, sw_B2, sw_B3, sw_B4, sw_B5, sw_B6
-} SWs_externos_t;
 
 /*! This definition is used to configure whether a pin is an input or an output*/
 typedef enum {GPIO_INPUT,/*!< Definition to configure a pin as input */
 			  GPIO_OUTPUT /*!< Definition to configure a pin as output */
 			 }gpio_port_direction_t;
 
-typedef enum{PRESS,NO_PRESS} status_portb_t;
 
 /*! These constants are used to select an specific port in the different API functions*/
 typedef enum{GPIO_A, /*!< Definition to select GPIO A */
@@ -117,11 +102,6 @@ typedef enum{GPIO_A, /*!< Definition to select GPIO A */
 /*! This data type is used to configure the pin control register */
 typedef const uint32_t gpio_pin_control_register_t;
 
-void GPIO_decode_intr_PORTB (gpio_port_name_t port_name);
-
-uint8_t GPIO_get_PORTB_SWs_status(gpio_port_name_t gpio, SWs_externos_t sw_number);
-
-void GPIO_clear_PORTB_SWs_status(gpio_port_name_t gpio, SWs_externos_t sw_number);
 /********************************************************************************************/
 // Configuracion para la interrupción de los puertos SW2 SW3 TECLADO
 void GPIO_callback_init(gpio_port_name_t port_name,void (*handler)(void));
@@ -203,8 +183,7 @@ void GPIO_data_direction_pin(gpio_port_name_t port_name, gpio_port_direction_t s
  	 \param[in] data Value to be written.
  	 \return void
  */
-void GPIO_write_port(gpio_port_name_t portName, uint32_t data);// f(x) #6
-
+void GPIO_write_port(gpio_port_name_t port_name, uint32_t data); // f(x) #6
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -234,7 +213,7 @@ void GPIO_set_pin(gpio_port_name_t port_name, uint8_t pin);		 // f(x) #8
  	 \param[in] pin Pin to be read.
  	 \return This function return 0 if the value of the pin is 0 logic or 1 is the value the pin is 1 logic.
  */
-uint32_t GPIO_read_pin(gpio_port_name_t port_name, uint8_t pin);	 // f(x) #9
+uint8_t GPIO_read_pin(gpio_port_name_t port_name, uint8_t pin);	 // f(x) #9
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -255,5 +234,15 @@ void GPIO_clear_pin(gpio_port_name_t port_name, uint8_t pin);	 // f(x) #10
  	 \return void
  */
 void GPIO_toogle_pin(gpio_port_name_t port_name, uint8_t pin);	// f(x) #11
+/********************************************************************************************/
+/********************************************************************************************/
+/********************************************************************************************/
+/*!
+ 	 \brief	 This function spend time in nothing.
+
+ 	 \param[in]  Valor para gastar tiempo
+ 	 \return void
+ */
+void delay(uint16_t delay);
 
 #endif /* GPIO_H_ */

@@ -13,7 +13,6 @@
 #include "MK64F12.h"
 
 typedef float My_float_pit_t;
-typedef float My_float_t;
 
 /*! This enumerated constant are used to select the PIT to be used*/
 typedef enum {PIT_0,PIT_1,PIT_2,PIT_3} PIT_timer_t;
