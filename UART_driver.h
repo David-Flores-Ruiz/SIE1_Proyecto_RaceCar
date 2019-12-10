@@ -13,7 +13,6 @@
 
 #include <stdint.h>
 #include "MK64F12.h" /* include peripheral declarations */
-#include "GPIO.h" /* include peripheral declarations */
 
 /**
  * \brief A mail box type definition for serial port
@@ -83,6 +82,5 @@ void UART_put_char (uart_channel_t uart_channel, uint8_t character);
  */
 void UART_put_string(uart_channel_t uart_channel, uint8_t* string);
 
-void ASCII_for_Print_UART0(void);
 
 #endif /* UART_DRIVER_H_ */

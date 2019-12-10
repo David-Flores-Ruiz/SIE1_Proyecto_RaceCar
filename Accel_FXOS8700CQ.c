@@ -7,7 +7,6 @@
 
 #include "Accel_FXOS8700CQ.h"
 #include "I2C.h"
-#include "UART_driver.h"
 #include <stdio.h>
 
 //#define DEBUG_ON	 	//** For debugging purposes = Leer Sensor */
@@ -145,42 +144,32 @@ void FSM_ACELEROMETRO(void)
 	switch (MoveAccel) {
 		case Move_ARRIBA:
 #ifdef DEBUG_ON_2
-			printf("Reversa! \n");
+			printf("Frena! \n");
 #endif
-			UART_put_char(UART_3, 'R');	// Reversa
-			delay(100);
 			break;
 
 		case Move_ABAJO:
 #ifdef DEBUG_ON_2
 			printf("Acelera! \n");
 #endif
-			UART_put_char(UART_3, 'A');	// Acelerado
-			delay(100);
 			break;
 
 		case Move_DER:
 #ifdef DEBUG_ON_2
 			printf("Giro a la derecha! \n");
 #endif
-			UART_put_char(UART_3, 'D');	// Derecha
-			delay(100);
 			break;
 
 		case Move_IZQ:
 #ifdef DEBUG_ON_2
 			printf("Giro a la izquierda! \n");
 #endif
-			UART_put_char(UART_3, 'I');	// Izquierda
-			delay(100);
 			break;
 
 		case Move_STOP:
 #ifdef DEBUG_ON_2
 			printf("Recargame Gasolina! \n");
 #endif
-			UART_put_char(UART_3, 'F');	// Frena
-			delay(100);
 			break;
 
 		default:

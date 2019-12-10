@@ -30,7 +30,7 @@ uint8_t string_date_day[4]  =  "DU/";
 uint8_t string_date_month[4] = "DU/";
 uint8_t string_date_year[3] =  "DU";
 
-uint8_t string_distance[8] = "00.00cm";
+uint8_t string_distance[6] = "00.00";
 
 uint8_t string_dummy[ ] = "";
 

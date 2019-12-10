@@ -244,5 +244,6 @@ void GPIO_toogle_pin(gpio_port_name_t port_name, uint8_t pin);	// f(x) #11
  	 \return void
  */
 void delay(uint16_t delay);
+uint32_t GPIO_get_PORT_distancia_hoyo(void);
 
 #endif /* GPIO_H_ */

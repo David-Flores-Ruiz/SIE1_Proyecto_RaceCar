@@ -12,7 +12,6 @@
 #include <stdint.h>
 
 void Seguidor_linea_init(void);
-void delay(uint16_t delay);
 
 
 #endif /* SEGUIDOR_LINEA_H_ */

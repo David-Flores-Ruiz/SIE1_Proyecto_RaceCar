@@ -16,6 +16,8 @@
 
 static void (*gpio_B_callback)  (void) = 0; // teclado
 
+/*Esta variable realizara la cuenta de cada uno de los hoyos */
+uint32_t g_vueltas_decoder  = 0;
 
 static gpio_interrupt_flags_t g_intr_status_flag = {0};
 
@@ -91,14 +93,20 @@ void PORTA_IRQHandler(void)
 	g_intr_status_flag.flag_port_a = TRUE; // bandera de SW de SW3
 	GPIO_clear_interrupt(GPIO_A);
 }
-void PORTB_IRQHandler(void)
-{
-	if(gpio_B_callback)
-	{
-		gpio_B_callback();	// Función del teclado
-	}
+
+void PORTB_IRQHandler(void) {
+
+	g_intr_status_flag.flag_port_b = TRUE;	// bandera de SW de 7 SW´S EXTERNOS
 
 	GPIO_clear_interrupt(GPIO_B);
+	g_vueltas_decoder++;
+
+
+}
+
+uint32_t GPIO_get_PORT_distancia_hoyo(void) {
+	uint32_t Hoyo_decoder = g_vueltas_decoder;
+	return (Hoyo_decoder);
 }
 
 void PORTC_IRQHandler(void) {

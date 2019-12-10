@@ -39,6 +39,21 @@ void RGB_init(void) {
 	GPIO_data_direction_pin(GPIO_B, GPIO_OUTPUT, bit_22); // OUTPUT - 1 RED
 	GPIO_data_direction_pin(GPIO_E, GPIO_OUTPUT, bit_26); // OUTPUT - 1 GREEN
 	GPIO_data_direction_pin(GPIO_B, GPIO_OUTPUT, bit_21); // OUTPUT - 1 BLUE
+
+	GPIO_clock_gating(GPIO_C);
+	/*Lineas agregadas para habilitacion de interrupcion para velocidad*/
+	gpio_pin_control_register_t pinINT_config = GPIO_MUX1 | INTR_RISING_EDGE;// Teclado
+	GPIO_pin_control_register(GPIO_B, bit_20, &pinINT_config); // Activa con Posedge
+	GPIO_data_direction_pin(GPIO_B, GPIO_INPUT, bit_20);// Perforacion (Interrupcion)
+
+	GPIO_pin_control_register(GPIO_B, bit_2, &led_config); // PTB - pin 2 GPIO
+	GPIO_pin_control_register(GPIO_B, bit_3, &led_config); // PTB - pin 3 GPIO
+
+	GPIO_clear_pin(GPIO_B, bit_2);	// OFF
+	GPIO_clear_pin(GPIO_B, bit_3);	// OFF
+
+	GPIO_data_direction_pin(GPIO_B, GPIO_OUTPUT, bit_2); // OUTPUT
+	GPIO_data_direction_pin(GPIO_B, GPIO_OUTPUT, bit_3); // OUTPUT
 }
 
 void SW_init(void){

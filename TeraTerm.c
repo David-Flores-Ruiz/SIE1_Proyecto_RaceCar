@@ -74,9 +74,6 @@ uint8_t modified_Year[3]  = {'1', '9'};
 uint8_t matrix_ON[3] 	= {'n', 'o'};
 
 void TeraTerm_Menu(void) {
-
-	uint8_t* ptr_string_distance = Get_String_Distance();
-
 	/**The following sentences send strings to PC using the UART_put_string function. Also, the string
 	 * is coded with terminal code*/
 	/**The following sentences send strings to PC using the UART_put_string function. Also, the string
@@ -94,27 +91,7 @@ void TeraTerm_Menu(void) {
 	UART_put_string(UART_0,"\033[11;10H");
 	UART_put_string(UART_0, "    ITESO\r");
 	/** VT100 command for positioning the cursor in x and y position*/
-	UART_put_string(UART_0,"\033[18;10H");
-	UART_put_string(UART_0, "Presiona el SW2 de la K64 - MASTER para cambiar de funcionalidad \r");
-	/** VT100 command for positioning the cursor in x and y position*/
-	UART_put_string(UART_0,"\033[21;10H");
-	UART_put_string(UART_0, "LED ROJO - STOP SYSTEM! \r");
-	/** VT100 command for positioning the cursor in x and y position*/
-	UART_put_string(UART_0,"\033[22;10H");
-	UART_put_string(UART_0, "LED VERDE - Seguidor de Linea! \r");
-	/** VT100 command for positioning the cursor in x and y position*/
-	UART_put_string(UART_0,"\033[23;10H");
-	UART_put_string(UART_0, "LED AZUL - Control remoto desde Kinetis! \r");
-	/** VT100 command for positioning the cursor in x and y position*/
-	UART_put_string(UART_0,"\033[24;10H");
-
-	/** VT100 command for positioning the cursor in x and y position*/
-	UART_put_string(UART_0,"\033[38;10H");
-	UART_put_string(UART_0, "La distancia reccorida es: \r");
-	/** VT100 command for positioning the cursor in x and y position*/
-	//UART_put_string(UART_0,"\033[31;10H");
-	//UART_put_string(UART_0, ptr_string_distance);	// Se actualizara - ok!
-	//UART_put_string(UART_0,"\033[32;10H");
+	UART_put_string(UART_0,"\033[14;10H");
 }
 
 void TeraTerm_Echo_UART0(void) {
